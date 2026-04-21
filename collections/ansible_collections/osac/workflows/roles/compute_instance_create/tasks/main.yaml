@@ -1,0 +1,33 @@
+---
+# Workflow: Create compute instance using inventory/provisioning separation
+#
+# Three-phase pattern:
+#   1. Select hosts (shared, inventory-agnostic via osac.service.select_hosts)
+#   2. Provision (template-specific role with standardized variables)
+#   3. Update inventory state (shared, inventory-agnostic via osac.service.update_host_state)
+
+# Phase 1: Select hosts for compute instance
+- name: Select hosts for compute instance
+  ansible.builtin.include_role:
+    name: osac.service.select_hosts
+  vars:
+    select_hosts_class: "{{ compute_instance_class }}"
+    select_hosts_count: 1
+    select_hosts_region: "{{ compute_instance_region | default('') }}"
+
+# Phase 2: Provision via template-specific role
+- name: Provision compute instance via template role
+  ansible.builtin.include_role:
+    name: "{{ compute_instance_template_collection }}.{{ compute_instance_template_role }}"
+    tasks_from: install.yaml
+  vars:
+    compute_instance_hosts: "{{ select_hosts_result }}"
+
+# Phase 3: Update host state after provisioning
+- name: Update host state after provisioning
+  ansible.builtin.include_role:
+    name: osac.service.update_host_state
+  vars:
+    update_host_names: "{{ select_hosts_result | map(attribute='inventory_hostname') | list }}"
+    update_host_state: "allocated"
+    update_host_tenant: "{{ compute_instance_tenant | default('') }}"

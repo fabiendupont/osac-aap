@@ -1,0 +1,67 @@
+argument_specs:
+  main:
+    short_description: >-
+      Orchestrate compute instance creation using the inventory/provisioning
+      separation pattern: select hosts, provision via template role, update state.
+    options:
+      compute_instance_class:
+        type: str
+        required: true
+        description: ComputeInstanceClass name for host selection
+      compute_instance_image:
+        type: dict
+        required: true
+        description: >-
+          Resolved image specification for the compute instance.
+        options:
+          source_type:
+            type: str
+            required: true
+            description: Image source type (e.g. "qcow2", "iso", "pxe")
+          source_ref:
+            type: str
+            required: true
+            description: Image source reference (URL or name)
+          boot_method:
+            type: str
+            required: true
+            description: Boot method (e.g. "disk", "network", "cdrom")
+      compute_instance_ssh_keys:
+        type: list
+        elements: str
+        required: true
+        description: List of SSH public key strings to inject
+      compute_instance_subnet:
+        type: str
+        required: false
+        default: ""
+        description: Subnet reference for network attachment
+      compute_instance_security_groups:
+        type: list
+        elements: str
+        required: false
+        default: []
+        description: List of security group references
+      compute_instance_user_data:
+        type: str
+        required: false
+        default: ""
+        description: User data string (e.g. cloud-init)
+      compute_instance_region:
+        type: str
+        required: false
+        default: ""
+        description: Region filter for host selection
+      compute_instance_template_role:
+        type: str
+        required: true
+        description: Ansible role name to execute for provisioning
+      compute_instance_template_collection:
+        type: str
+        required: true
+        description: Ansible collection containing the template role
+      compute_instance_tenant:
+        type: str
+        required: false
+        default: ""
+        description: Tenant ID for host allocation tracking

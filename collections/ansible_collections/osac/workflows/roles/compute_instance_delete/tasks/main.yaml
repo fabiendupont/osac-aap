@@ -1,0 +1,23 @@
+---
+# Workflow: Delete compute instance using inventory/provisioning separation
+#
+# Two-phase pattern:
+#   1. Deprovision (template-specific role with standardized variables)
+#   2. Update inventory state (shared, inventory-agnostic via osac.service.update_host_state)
+
+# Phase 1: Deprovision via template-specific role
+- name: Deprovision compute instance via template role
+  ansible.builtin.include_role:
+    name: "{{ compute_instance_template_collection }}.{{ compute_instance_template_role }}"
+    tasks_from: delete.yaml
+  vars:
+    compute_instance_hosts: "{{ compute_instance_hosts }}"
+
+# Phase 2: Release hosts back to available pool
+- name: Update host state after deprovisioning
+  ansible.builtin.include_role:
+    name: osac.service.update_host_state
+  vars:
+    update_host_names: "{{ compute_instance_hosts | map(attribute='inventory_hostname') | list }}"
+    update_host_state: "available"
+    update_host_tenant: ""

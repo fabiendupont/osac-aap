@@ -1,0 +1,23 @@
+argument_specs:
+  main:
+    short_description: >-
+      Orchestrate compute instance deletion using the inventory/provisioning
+      separation pattern: deprovision via template role, release hosts.
+    options:
+      compute_instance_class:
+        type: str
+        required: true
+        description: ComputeInstanceClass name (for host state update context)
+      compute_instance_hosts:
+        type: list
+        elements: dict
+        required: true
+        description: List of host dicts to deprovision (from original provisioning)
+      compute_instance_template_role:
+        type: str
+        required: true
+        description: Ansible role name to execute for deprovisioning
+      compute_instance_template_collection:
+        type: str
+        required: true
+        description: Ansible collection containing the template role
