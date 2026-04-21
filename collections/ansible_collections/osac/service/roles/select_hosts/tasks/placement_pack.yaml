@@ -1,0 +1,28 @@
+---
+# Pack placement: fill groups before spilling to next
+# Groups by affinity_key if specified, otherwise no grouping
+
+- name: Apply pack placement without affinity
+  ansible.builtin.set_fact:
+    select_hosts_result: "{{ select_hosts_result | sort(attribute='inventory_hostname') }}"
+  when: select_hosts_placement.affinity_key | default('') | length == 0
+
+- name: Apply pack placement with affinity grouping
+  when: select_hosts_placement.affinity_key | default('') | length > 0
+  block:
+    - name: Group candidates by affinity key
+      ansible.builtin.set_fact:
+        _affinity_groups: >-
+          {{ select_hosts_result
+             | groupby(select_hosts_placement.affinity_key) }}
+
+    - name: Sort groups by size (largest first for packing)
+      ansible.builtin.set_fact:
+        _sorted_groups: >-
+          {{ _affinity_groups
+             | sort(attribute='1', reverse=true) }}
+
+    - name: Select from largest groups first
+      ansible.builtin.set_fact:
+        select_hosts_result: >-
+          {{ _sorted_groups | map(attribute='1') | flatten }}

@@ -1,0 +1,31 @@
+---
+# Spread placement: distribute across failure domains
+# Round-robin across groups defined by affinity_key or rack
+
+- name: Apply spread placement without affinity
+  ansible.builtin.set_fact:
+    select_hosts_result: "{{ select_hosts_result | shuffle }}"
+  when: select_hosts_placement.affinity_key | default('') | length == 0
+
+- name: Apply spread placement with affinity grouping
+  when: select_hosts_placement.affinity_key | default('') | length > 0
+  block:
+    - name: Group candidates by affinity key
+      ansible.builtin.set_fact:
+        _affinity_groups: >-
+          {{ select_hosts_result
+             | groupby(select_hosts_placement.affinity_key) }}
+
+    - name: Round-robin across groups
+      ansible.builtin.set_fact:
+        select_hosts_result: >-
+          {% set result = [] %}
+          {% set max_len = _affinity_groups | map(attribute='1') | map('length') | max %}
+          {% for i in range(max_len) %}
+          {% for group in _affinity_groups %}
+          {% if i < group[1] | length %}
+          {% set _ = result.append(group[1][i]) %}
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+          {{ result }}
