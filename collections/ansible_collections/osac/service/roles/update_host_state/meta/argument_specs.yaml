@@ -1,0 +1,42 @@
+argument_specs:
+  main:
+    short_description: >-
+      Update host state in the inventory source after provisioning or deprovisioning.
+      Supports NetBox, NICo, Ironic, and static AAP inventory backends.
+    options:
+      update_host_names:
+        type: list
+        elements: str
+        required: true
+        description: List of host names to update
+      update_host_state:
+        type: str
+        required: true
+        choices:
+          - available
+          - allocated
+          - maintenance
+          - error
+        description: New state for hosts
+      update_host_tenant:
+        type: str
+        required: false
+        default: ""
+        description: Tenant ID to assign (for "allocated" state)
+      update_host_backend:
+        type: str
+        required: false
+        default: ""
+        choices:
+          - netbox
+          - nico
+          - ironic
+          - static
+          - ""
+        description: >-
+          Inventory backend type. Auto-detected from host_vars if not set.
+      update_host_inventory:
+        type: str
+        required: false
+        default: "OSAC Hosts"
+        description: AAP inventory name (for static backend)

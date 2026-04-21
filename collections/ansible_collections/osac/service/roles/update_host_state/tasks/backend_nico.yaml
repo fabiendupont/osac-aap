@@ -1,0 +1,9 @@
+---
+- name: Update machine state in NICo
+  nvidia.bare_metal.machine:
+    name: "{{ item }}"
+    labels:
+      state: "{{ update_host_state }}"
+      tenant: "{{ update_host_tenant | default('') }}"
+    state: present
+  loop: "{{ update_host_names }}"

@@ -1,0 +1,9 @@
+---
+- name: Update baremetal node in Ironic
+  openstack.cloud.baremetal_node:
+    name: "{{ item }}"
+    extra:
+      state: "{{ update_host_state }}"
+      tenant: "{{ update_host_tenant | default('') }}"
+    state: present
+  loop: "{{ update_host_names }}"
