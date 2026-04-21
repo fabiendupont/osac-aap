@@ -1,0 +1,17 @@
+---
+- name: Update device state in NetBox
+  netbox.netbox.netbox_device:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_token }}"
+    data:
+      name: "{{ item }}"
+      status: "{{ _netbox_state_map[update_host_state] }}"
+      tenant: "{{ update_host_tenant | default(omit) }}"
+    state: present
+  loop: "{{ update_host_names }}"
+  vars:
+    _netbox_state_map:
+      available: "active"
+      allocated: "active"
+      maintenance: "planned"
+      error: "failed"

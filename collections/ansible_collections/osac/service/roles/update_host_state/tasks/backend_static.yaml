@@ -1,0 +1,10 @@
+---
+- name: Update host_vars in AAP inventory (static)
+  ansible.controller.host:
+    name: "{{ item }}"
+    inventory: "{{ update_host_inventory | default('OSAC Hosts') }}"
+    variables:
+      state: "{{ update_host_state }}"
+      tenant: "{{ update_host_tenant | default('') }}"
+    state: present
+  loop: "{{ update_host_names }}"

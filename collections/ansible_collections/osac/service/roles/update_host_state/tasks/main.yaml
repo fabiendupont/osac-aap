@@ -1,0 +1,21 @@
+---
+- name: Validate required parameters
+  ansible.builtin.assert:
+    that:
+      - update_host_names | length > 0
+      - update_host_state in ['available', 'allocated', 'maintenance', 'error']
+    fail_msg: "update_host_names and valid update_host_state are required"
+
+- name: Detect inventory backend
+  ansible.builtin.set_fact:
+    _update_backend: >-
+      {{ hostvars[update_host_names[0]].inventory_source | default('static') }}
+  when: update_host_backend | default('') | length == 0
+
+- name: Set backend from parameter
+  ansible.builtin.set_fact:
+    _update_backend: "{{ update_host_backend }}"
+  when: update_host_backend | default('') | length > 0
+
+- name: Update host state via backend
+  ansible.builtin.include_tasks: "backend_{{ _update_backend }}.yaml"
