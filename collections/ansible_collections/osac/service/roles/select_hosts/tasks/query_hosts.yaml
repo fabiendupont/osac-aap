@@ -1,0 +1,35 @@
+---
+# Query AAP inventory for hosts matching class and region filters
+- name: Build host query filters
+  ansible.builtin.set_fact:
+    _select_hosts_candidates: >-
+      {{ groups.get('all', [])
+         | map('extract', hostvars)
+         | selectattr('hostclass', 'defined')
+         | selectattr('hostclass', 'equalto', select_hosts_class)
+         | selectattr('state', 'defined')
+         | selectattr('state', 'equalto', 'available')
+         | list }}
+
+- name: Apply region filter
+  ansible.builtin.set_fact:
+    _select_hosts_candidates: >-
+      {{ _select_hosts_candidates
+         | selectattr('site', 'defined')
+         | selectattr('site', 'equalto', select_hosts_region)
+         | list }}
+  when: select_hosts_region | length > 0
+
+- name: Validate host_vars contract
+  ansible.builtin.assert:
+    that:
+      - item.hostclass is defined
+      - item.state is defined
+    fail_msg: "Host {{ item.inventory_hostname | default('unknown') }} missing required host_vars (hostclass, state)"
+  loop: "{{ _select_hosts_candidates }}"
+  loop_control:
+    label: "{{ item.inventory_hostname | default('unknown') }}"
+
+- name: Set initial candidates
+  ansible.builtin.set_fact:
+    select_hosts_result: "{{ _select_hosts_candidates }}"
