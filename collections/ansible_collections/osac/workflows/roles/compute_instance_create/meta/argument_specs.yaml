@@ -12,20 +12,26 @@ argument_specs:
         type: dict
         required: true
         description: >-
-          Resolved image specification for the compute instance.
+          Resolved image specification, denormalized from the Image resource
+          at ComputeInstance creation time by the fulfillment-service.
         options:
           source_type:
             type: str
             required: true
-            description: Image source type (e.g. "qcow2", "iso", "pxe")
+            description: Image source type (e.g. "registry")
           source_ref:
             type: str
             required: true
-            description: Image source reference (URL or name)
+            description: Image source reference (e.g. OCI image URL)
           boot_method:
             type: str
             required: true
-            description: Boot method (e.g. "disk", "network", "cdrom")
+            description: Boot method ("ignition", "cloud-init", or "kickstart")
+          checksum:
+            type: str
+            required: false
+            default: ""
+            description: Image checksum for integrity verification (e.g. "sha256:abc123...")
       compute_instance_ssh_keys:
         type: list
         elements: str
@@ -52,6 +58,20 @@ argument_specs:
         required: false
         default: ""
         description: Region filter for host selection
+      compute_instance_count:
+        type: int
+        required: false
+        default: 1
+        description: Number of hosts to select for this provisioning request
+      compute_instance_placement:
+        type: dict
+        required: false
+        default:
+          strategy: pack
+          affinity_key: ""
+        description: >-
+          Placement policy for host selection. strategy: "pack" (default) | "spread".
+          affinity_key: host_var name to group by (e.g. "nvlink_domain").
       compute_instance_template_role:
         type: str
         required: true

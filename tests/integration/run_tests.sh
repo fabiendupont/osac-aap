@@ -31,6 +31,8 @@ WORKFLOWS=(
   "compute_instance_with_gpu_create"
   "compute_instance_delete"
   "cluster_status_reporting"
+  "select_hosts"
+  "metal3_bm"
 )
 
 # Role-level integration tests.
@@ -51,6 +53,10 @@ ROLE_SCENARIO_TESTS=(
   "tenant_target_namespace:test_found"
 )
 
+# Tests that use a custom inventory instead of the default
+declare -A CUSTOM_INVENTORY
+CUSTOM_INVENTORY[select_hosts]="inventories/select-hosts-inventory.yml"
+
 echo "=== Running Workflow Integration Tests ==="
 echo ""
 
@@ -59,9 +65,15 @@ for workflow in "${WORKFLOWS[@]}"; do
   echo "Testing: $workflow"
   echo "----------------------------------------"
 
+  # Determine inventory to use
+  INVENTORY_ARG=""
+  if [ -n "${CUSTOM_INVENTORY[$workflow]:-}" ]; then
+    INVENTORY_ARG="-i ${CUSTOM_INVENTORY[$workflow]}"
+  fi
+
   # Baseline test
   echo "  [1/2] Running baseline test..."
-  if ansible-playbook "targets/${workflow}/tasks/baseline.yml" -e "@common_vars.yml" -v; then
+  if ansible-playbook ${INVENTORY_ARG} "targets/${workflow}/tasks/baseline.yml" -e "@common_vars.yml" -v; then
     echo "  ✓ Baseline passed"
     PASSED+=("$workflow:baseline")
   else
@@ -75,7 +87,7 @@ for workflow in "${WORKFLOWS[@]}"; do
     # Clear override log
     > /tmp/osac_test_overrides.log
 
-    if ansible-playbook "targets/${workflow}/tasks/overrides.yml" -e "@common_vars.yml" -v; then
+    if ansible-playbook ${INVENTORY_ARG} "targets/${workflow}/tasks/overrides.yml" -e "@common_vars.yml" -v; then
       # Verify override log has entries
       if [ -s /tmp/osac_test_overrides.log ]; then
         echo "  ✓ Override test passed"

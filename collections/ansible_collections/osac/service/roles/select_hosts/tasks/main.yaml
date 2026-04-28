@@ -39,7 +39,7 @@
 
     - name: Trim selection to requested count
       ansible.builtin.set_fact:
-        select_hosts_result: "{{ select_hosts_result[:select_hosts_count | int] }}"
+        select_hosts_result: "{{ select_hosts_result[: select_hosts_count | int] }}"
 
   always:
     - name: Release distributed lock

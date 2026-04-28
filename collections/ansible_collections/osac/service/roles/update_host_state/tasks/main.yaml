@@ -8,14 +8,14 @@
 
 - name: Detect inventory backend
   ansible.builtin.set_fact:
-    _update_backend: >-
+    update_host_state_backend: >-
       {{ hostvars[update_host_names[0]].inventory_source | default('static') }}
   when: update_host_backend | default('') | length == 0
 
 - name: Set backend from parameter
   ansible.builtin.set_fact:
-    _update_backend: "{{ update_host_backend }}"
+    update_host_state_backend: "{{ update_host_backend }}"
   when: update_host_backend | default('') | length > 0
 
 - name: Update host state via backend
-  ansible.builtin.include_tasks: "backend_{{ _update_backend }}.yaml"
+  ansible.builtin.include_tasks: "backend_{{ update_host_state_backend }}.yaml"

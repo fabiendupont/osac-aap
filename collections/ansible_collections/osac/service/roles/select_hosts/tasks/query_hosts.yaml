@@ -10,7 +10,14 @@
 - name: Build candidates with inventory_hostname preserved
   ansible.builtin.set_fact:
     _select_hosts_candidates: >-
-      {{ _select_hosts_candidates + [hostvars[item] | combine({'inventory_hostname': item})] }}
+      {{ _select_hosts_candidates + [{
+        'inventory_hostname': item,
+        'hostclass': hostvars[item].hostclass,
+        'state': hostvars[item].state,
+        'site': hostvars[item].site | default(''),
+        'rack': hostvars[item].rack | default(''),
+        'nvlink_domain': hostvars[item].nvlink_domain | default('')
+      }] }}
   loop: "{{ groups.get('all', []) }}"
   when:
     - hostvars[item].hostclass is defined
