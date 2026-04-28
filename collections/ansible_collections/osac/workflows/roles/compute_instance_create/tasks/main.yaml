@@ -5,6 +5,14 @@
 #   1. Select hosts (shared, inventory-agnostic via osac.service.select_hosts)
 #   2. Provision (template-specific role with standardized variables)
 #   3. Update inventory state (shared, inventory-agnostic via osac.service.update_host_state)
+#
+# Prerequisites: The caller must resolve resource references before invoking this role:
+#   - compute_instance_image: Resolved Image dict with source_type, source_ref, boot_method
+#     (not just an image_ref name string — the caller must fetch the Image from the API)
+#   - compute_instance_ssh_keys: List of SSH public key strings
+#     (not just ssh_key_refs names — the caller must fetch each SSHKey's public_key)
+#   - compute_instance_class: Resolved ComputeInstanceClass dict with capabilities
+#     (not just the class name — the caller must fetch the class from the API)
 
 # Phase 1: Select hosts for compute instance
 - name: Select hosts for compute instance
@@ -12,8 +20,9 @@
     name: osac.service.select_hosts
   vars:
     select_hosts_class: "{{ compute_instance_class }}"
-    select_hosts_count: 1
+    select_hosts_count: "{{ compute_instance_count | default(1) }}"
     select_hosts_region: "{{ compute_instance_region | default('') }}"
+    select_hosts_placement: "{{ compute_instance_placement | default({'strategy': 'pack', 'affinity_key': ''}) }}"
 
 # Phase 2: Provision via template-specific role
 - name: Provision compute instance via template role

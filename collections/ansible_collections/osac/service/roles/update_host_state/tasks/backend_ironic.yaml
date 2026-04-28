@@ -1,5 +1,5 @@
 ---
-- name: Update baremetal node in Ironic
+- name: Update baremetal node in Ironic  # noqa: args[module]
   openstack.cloud.baremetal_node:
     name: "{{ item }}"
     extra:
