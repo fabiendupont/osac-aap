@@ -9,7 +9,7 @@
 #   Test 1 (happy path -- fully qualified template ID):
 #     ansible-playbook ... -e test_qualified_id=true
 #
-#   Test 2 (unqualified template ID -- gets osac.templates. prefix):
+#   Test 2 (unqualified template ID -- gets osac.cluster_hcp. prefix):
 #     ansible-playbook ... -e test_unqualified_id=true
 #
 #   Test 3 (pre-defined template_id -- role skips extraction):
@@ -31,7 +31,7 @@
       ansible.builtin.set_fact:
         cluster_order:
           spec:
-            templateID: "osac.templates.ocp_4_17_small"
+            templateID: "osac.cluster_hcp.ocp_4_17_small"
             templateParameters: '{"pull_secret": "test-secret", "ssh_public_key": "ssh-rsa AAAA"}'
             nodeRequests:
               - resourceClass: fc430
@@ -47,8 +47,8 @@
       ansible.builtin.assert:
         that:
           - template_id is defined
-          - template_id == "osac.templates.ocp_4_17_small"
-        fail_msg: "template_id should be 'osac.templates.ocp_4_17_small', got '{{ template_id | default('undefined') }}'"
+          - template_id == "osac.cluster_hcp.ocp_4_17_small"
+        fail_msg: "template_id should be 'osac.cluster_hcp.ocp_4_17_small', got '{{ template_id | default('undefined') }}'"
         success_msg: "template_id extracted: {{ template_id }}"
       when: test_qualified_id | default(false) | bool
 
@@ -75,8 +75,8 @@
       when: test_qualified_id | default(false) | bool
 
 # ──────────────────────────────────────────────────────────────
-# Test 2: Unqualified template ID -- gets osac.templates. prefix
-# Expected: template_id prefixed with "osac.templates."
+# Test 2: Unqualified template ID -- gets osac.cluster_hcp. prefix
+# Expected: template_id prefixed with "osac.cluster_hcp."
 # ──────────────────────────────────────────────────────────────
 - name: "Test extract_template_info -- unqualified template ID"
   hosts: localhost
@@ -101,8 +101,8 @@
       ansible.builtin.assert:
         that:
           - template_id is defined
-          - template_id == "osac.templates.ocp_4_17_small"
-        fail_msg: "Expected 'osac.templates.ocp_4_17_small', got '{{ template_id | default('undefined') }}'"
+          - template_id == "osac.cluster_hcp.ocp_4_17_small"
+        fail_msg: "Expected 'osac.cluster_hcp.ocp_4_17_small', got '{{ template_id | default('undefined') }}'"
         success_msg: "Unqualified ID correctly prefixed: {{ template_id }}"
       when: test_unqualified_id | default(false) | bool
 
@@ -120,7 +120,7 @@
         template_id: "custom.collection.my_template"
         cluster_order:
           spec:
-            templateID: "osac.templates.ocp_4_17_small"
+            templateID: "osac.cluster_hcp.ocp_4_17_small"
             templateParameters: '{}'
             nodeRequests: []
       when: test_predefined_id | default(false) | bool
@@ -151,7 +151,7 @@
       ansible.builtin.set_fact:
         cluster_order:
           spec:
-            templateID: "osac.templates.ocp_virt_vm"
+            templateID: "osac.compute_kubevirt.ocp_virt_vm"
             templateParameters: '{}'
             nodeRequests: []
       when: test_empty_params | default(false) | bool

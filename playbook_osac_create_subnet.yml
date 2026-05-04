@@ -27,5 +27,5 @@
 
     - name: Call the selected Subnet role
       ansible.builtin.include_role:
-        name: "osac.templates.{{ implementation_strategy }}"
+        name: "{{ network_class_collection }}.{{ implementation_strategy }}"
         tasks_from: create_subnet

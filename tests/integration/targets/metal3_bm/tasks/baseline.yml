@@ -129,7 +129,7 @@
   tasks:
     - name: Validate argument spec accepts valid input
       ansible.builtin.include_role:
-        name: osac.templates.metal3_bm
+        name: osac.compute_metal3.metal3_bm
         tasks_from: status.yaml
       vars:
         compute_instance_hosts:

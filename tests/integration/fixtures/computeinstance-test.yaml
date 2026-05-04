@@ -5,7 +5,7 @@ metadata:
   name: test-vm
   namespace: osac-system
 spec:
-  templateID: osac.templates.ocp_virt_vm
+  templateID: osac.compute_kubevirt.ocp_virt_vm
   networkAttachments:
     - subnetRef: test-subnet
   cores: 2

@@ -40,7 +40,8 @@
   collections:
     - osac.workflows
     - osac.service
-    - osac.templates
+    - osac.compute_kubevirt
+    - osac.compute_metal3
 
   pre_tasks:
     # HOOK: Workflow start
