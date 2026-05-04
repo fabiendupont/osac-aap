@@ -5,6 +5,6 @@ metadata:
   name: test-vm-defaults
   namespace: osac-system
 spec:
-  templateID: osac.templates.ocp_virt_vm
+  templateID: osac.compute_kubevirt.ocp_virt_vm
 status:
   desiredConfigVersion: "1"

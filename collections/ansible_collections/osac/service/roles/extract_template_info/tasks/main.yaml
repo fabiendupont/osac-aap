@@ -4,11 +4,11 @@
   ansible.builtin.set_fact:
     template_id: "{{ cluster_order.spec.templateID }}"
 
-- name: Handle unqualfied template ids
+- name: Handle unqualified template ids
   when: >-
     "." not in template_id
   ansible.builtin.set_fact:
-    template_id: "osac.templates.{{ template_id }}"
+    template_id: "osac.cluster_hcp.{{ template_id }}"
 
 - name: Extract template parameters
   when: >-

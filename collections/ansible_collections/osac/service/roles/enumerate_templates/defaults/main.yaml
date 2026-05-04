@@ -1,2 +1,6 @@
 osac_template_collections:  # noqa:var-naming[no-role-prefix]
-- osac.templates
+- osac.compute_kubevirt
+- osac.compute_metal3
+- osac.cluster_hcp
+- osac.networking_ovnk
+- osac.networking_metallb

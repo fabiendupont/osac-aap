@@ -54,7 +54,7 @@
       ansible.builtin.assert:
         that:
           - template_id is defined
-          - template_id == "osac.templates.ocp_virt_vm"
+          - template_id == "osac.compute_kubevirt.ocp_virt_vm"
         fail_msg: "Template ID not extracted correctly"
 
     - name: Verify user-specified spec values override template defaults

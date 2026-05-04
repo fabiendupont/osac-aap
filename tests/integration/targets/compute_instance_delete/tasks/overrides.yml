@@ -36,7 +36,7 @@
           name: osac.test_overrides.workflow_hooks
           tasks_from: workflow_complete.yml
 
-        # NOTE: Using real template (osac.templates.ocp_virt_vm from fixture)
+        # NOTE: Using real template (osac.compute_kubevirt.ocp_virt_vm from fixture)
         # We override the hooks below to test the override mechanism
 
         # Override 3 template extension points

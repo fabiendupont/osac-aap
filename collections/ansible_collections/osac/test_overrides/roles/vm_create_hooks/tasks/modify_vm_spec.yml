@@ -7,5 +7,5 @@
 
 - name: Delegate to original modify_vm_spec role
   ansible.builtin.include_role:
-    name: osac.templates.ocp_virt_vm
+    name: osac.compute_kubevirt.ocp_virt_vm
     tasks_from: create_modify_vm_spec.yaml

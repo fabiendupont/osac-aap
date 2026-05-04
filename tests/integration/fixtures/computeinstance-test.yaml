@@ -5,7 +5,7 @@ metadata:
   name: test-vm
   namespace: osac-system
 spec:
-  templateID: osac.templates.ocp_virt_vm
+  templateID: osac.compute_kubevirt.ocp_virt_vm
   cores: 2
   memoryGiB: 4
   bootDisk:
