@@ -7,7 +7,7 @@
   loop_control:
     label: "{{ item.inventory_hostname }}"
   when: compute_instance_class.capabilities.gpus is defined
-  ignore_errors: true
+  ignore_errors: true  # noqa: ignore-errors
 
 - name: Remove InfiniBand partition
   nvidia.ufm.pkey:
@@ -18,7 +18,7 @@
   loop_control:
     label: "{{ item.inventory_hostname }}"
   when: item.ib_guids is defined
-  ignore_errors: true
+  ignore_errors: true  # noqa: ignore-errors
 
 - name: Deprovision BareMetalHost
   kubernetes.core.k8s:

@@ -18,10 +18,10 @@
 
     - name: Render ignition with multiple keys
       ansible.builtin.template:
-        src: "{{ role_path }}/templates/userdata_ignition.j2"
+        src: "{{ _test_role_path }}/templates/userdata_ignition.j2"
         dest: /tmp/osac_test_ignition_override.json
       vars:
-        role_path: "{{ playbook_dir }}/../../../../../collections/ansible_collections/osac/templates/roles/metal3_bm"
+        _test_role_path: "{{ playbook_dir }}/../../../../../collections/ansible_collections/osac/templates/roles/metal3_bm"
         compute_instance_ssh_keys:
           - "ssh-ed25519 AAAA_key_1 admin@prod"
           - "ssh-rsa AAAA_key_2 deploy@ci"
